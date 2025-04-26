@@ -2,3 +2,10 @@
 .idea*
 .next*
 node_modules*
+
+# Bun lock
+bun.lockb
+.vercel
+
+# Vite
+backend/public
