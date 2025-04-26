@@ -1,13 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Directory containing the .js and .css files
-FILES_DIR="./"  # Change this to your target directory if different
+# --- CONFIGURATION ---
 
-# Initialize an empty variable to store all file contents
+# Directory to scan (default current directory).
+FILES_DIR="./"
+
+# Array of file extensions to include.
+EXTENSIONS=(".env" ".sh" ".ts" ".tsx" ".js" ".jsx" ".mjs" ".json" ".html" ".css" ".toml" ".yaml" ".yml" "Dockerfile.db" "Dockerfile.site" ".sql" ".py")
+
+# Array of filepath contents to exclude.
+# If you need more (e.g., "dist", "build", "test"), add them here:
+EXCLUSIONS=(".idea" ".next" "dist" "public" "node_modules" "package-lock" "ios" "android")
+
+# ---------------------
+
+# Initialize a variable to store concatenated file contents.
 output=""
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
 
 # Function to copy to clipboard based on OS
 copy_to_clipboard() {
@@ -28,7 +44,7 @@ copy_to_clipboard() {
             fi
             ;;
         CYGWIN*|MINGW*|MSYS*)
-            # Windows (Using clip.exe)
+            # Windows (using clip.exe)
             echo -e "$output" | clip.exe
             ;;
         *)
@@ -38,30 +54,78 @@ copy_to_clipboard() {
     esac
 }
 
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
+# 1) Build the file-extension matching part of the `find` command
+#    e.g. \( -name "*.ts" -o -name "*.tsx" -o ... \)
+FIND_EXT_ARGS=()
+for ext in "${EXTENSIONS[@]}"; do
+    FIND_EXT_ARGS+=( -name "*${ext}" -o )
+done
+# Remove the trailing "-o" from the last entry
+unset 'FIND_EXT_ARGS[${#FIND_EXT_ARGS[@]}-1]'
 
-# Iterate over all .js and .css files in the specified directory, excluding node_modules
+# 2) Build the exclusion part of the `find` command:
+#    For each EXCLUSIONS keyword, we add:  -not -path "*<keyword>*"
+#    We also always exclude any path that has node_modules in it.
+FIND_EXCLUDE_ARGS=()
+# Always exclude node_modules:
+FIND_EXCLUDE_ARGS+=( -not -path "*node_modules*" )
+# Then exclude anything from the EXCLUSIONS array:
+for exclusion in "${EXCLUSIONS[@]}"; do
+    FIND_EXCLUDE_ARGS+=( -not -path "*${exclusion}*" )
+done
+
+# -- Construct the final find command --
+#
+# Explanation:
+#   -type f                    => Only files
+#   ( "${FIND_EXT_ARGS[@]}" )  => File extension matching, with OR logic
+#   "${FIND_EXCLUDE_ARGS[@]}"  => Exclude paths containing these patterns
+#   -print                     => Print matching file paths
+#
+# Example in plain English:
+#   find . -type f ( -name "*.ts" -o -name "*.tsx" ... ) \
+#       -not -path "*node_modules*" \
+#       -not -path "*dist*" \
+#       -print
+
+# Use a process substitution to read the paths from the find command one by one
 while IFS= read -r file; do
-    # Add the full file path as a comment to the output
-    if [[ "$file" == *.tsx ]]; then
-        output+="// $file\n\n"
-    elif [[ "$file" == *.css ]]; then
-        output+="/* $file */\n\n"
-    fi
+    # Detect the file extension
+    extension="${file##*.}"
 
-    # Append the file contents to the output
+    # Add a comment header before each file's content
+    case "$extension" in
+        ts|tsx|js|jsx)
+            # For script-like files, prepend with //
+            output+="// $file\n\n"
+            ;;
+        html|css)
+            # For markup/style files, prepend with /* */
+            output+="/* $file */\n\n"
+            ;;
+        *)
+            # Fallback
+            output+="# $file\n\n"
+            ;;
+    esac
+
+    # Append the file content
     file_content=$(cat "$file")
     output+="$file_content\n\n"
-done < <(find "$FILES_DIR" -type d -name "node_modules" -prune -o -type f \( -name "*.tsx" -o -name "*.css" \) -print)
 
-# Copy the entire output to the system clipboard
+done < <(
+    # Execute the find command
+    find "$FILES_DIR" \
+        -type f \( "${FIND_EXT_ARGS[@]}" \) \
+        "${FIND_EXCLUDE_ARGS[@]}" \
+        -print
+)
+
+# Copy all concatenated contents to the clipboard
 copy_to_clipboard
 
-# Print the entire output to the console
+# Print to console
 echo -e "$output"
 
-# Print a success message
-echo "All .tsx and .css file contents have been copied to the clipboard."
+# Print success message
+echo "All matching file contents have been copied to the clipboard."

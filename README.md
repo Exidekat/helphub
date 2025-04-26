@@ -38,7 +38,7 @@
 1. **Clone Repo**: `git clone https://github.com/sjresq/helphub.git`
 2. **Install**: `bun install`
 3. **Env Setup**: Create `.env.local` with `DATABASE_URL` pointing to NeonDB.
-4. **Run Locally**: `npm run dev`
+4. **Run Locally**: `bun run dev`
 5. **Deploy**: Push to `main` — Vercel auto‑deploys.
 
 ---
