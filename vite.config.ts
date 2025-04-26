@@ -1,13 +1,12 @@
-// site/vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  // Set the root to our frontend directory.
+  // point Vite at your frontend source
   root: path.resolve(__dirname, 'frontend'),
-  // Set base to a relative path so that built asset URLs are correct.
-  base: './',
+  // ensure all asset URLs are absolute so they load from '/'
+  base: '/',
   plugins: [react()],
   resolve: {
     alias: {
@@ -15,7 +14,8 @@ export default defineConfig({
     }
   },
   build: {
-    // Build the output to the backend/public directory.
-    outDir: path.resolve(__dirname, 'backend/public')
+    // output exactly where Vercel expects it
+    outDir: path.resolve(__dirname, 'backend/public'),
+    emptyOutDir: true
   }
 });
