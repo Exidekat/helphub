@@ -1,29 +1,23 @@
-"use client";
-
+// HomePage is adapted for Vite:
+// - use standard HTML <img> instead of Next.js Image
+// - remove framer-motion to avoid missing dependency
 //import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 //import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Footer from "../components/Footer";
 
 export default function HomePage() {
     //const router = useRouter();
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="bg-black min-h-screen flex flex-col items-center p-8 sm:p-20 gap-12"
-        >
+        <div className="bg-black min-h-screen flex flex-col items-center p-8 sm:p-20 gap-12">
             {/* Hero Section */}
             <section className="w-full max-w-5xl flex flex-col gap-8 items-center">
-                <Image
+                <img
                     className="rounded-full shadow-lg"
                     src="/helphub-icon-alpha.png"
                     alt="App Icon"
                     width={150}
                     height={150}
-                    priority
                 />
                 <h1 className="text-4xl sm:text-5xl font-bold text-center text-white">
                     HelpHub by SJ ResQ
@@ -99,6 +93,6 @@ export default function HomePage() {
                 </p>
             </section>
             <Footer />
-        </motion.div>
+        </div>
     );
 }
