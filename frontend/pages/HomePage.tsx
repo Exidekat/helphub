@@ -41,7 +41,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button className="bg-red-600 hover:bg-red-700 text-white">
-                    <Link to="/scan/demo" className="flex items-center">
+                    <Link to="/overview" className="flex items-center">
                       Try Demo <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>

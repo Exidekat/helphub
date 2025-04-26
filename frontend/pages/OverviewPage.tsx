@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
+import Footer from '../components/ui/Footer';
 import { BASE_API_URL } from '../config';
 
 type Report = {
