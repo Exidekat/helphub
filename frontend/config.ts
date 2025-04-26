@@ -1,18 +1,12 @@
 /**
  * config.ts
  *
- * This file exports configuration constants for the frontend.
- * It reads the META_URL from the environment variable VITE_META_URL.
- * If VITE_META_URL is not defined or is blank, it defaults to "/api".
+ * Exports configuration constants for the frontend.
  *
- * It also exports MOBILE_VER which is set to true if VITE_MOBILE_VER is "true".
+ * - BASE_API_URL is "/api" unless VITE_META_URL is set.
+ * - MOBILE_VER is true if VITE_MOBILE_VER === "true".
+ * - API_BASE defaults to BASE_API_URL, but you can override via VITE_API_BASE.
  */
-const metaUrl: string = import.meta.env.VITE_META_URL || "";
-export const BASE_API_URL = metaUrl.trim() !== "" ? metaUrl : "/api";
-export const MOBILE_VER = import.meta.env.VITE_MOBILE_VER === "true";
-export const API_BASE = import.meta.env.VITE_API_BASE || 'https://www.sjresq.org/api';
-
-
 
 export const siteConfig = {
     name: "HelpHub",
@@ -36,3 +30,10 @@ export const siteConfig = {
       },
     ],
   }
+
+const metaUrl: string = import.meta.env.VITE_META_URL || '';
+export const BASE_API_URL = metaUrl.trim() !== '' ? metaUrl : '/api';
+export const MOBILE_VER = import.meta.env.VITE_MOBILE_VER === 'true';
+
+// Use BASE_API_URL by default (always relative), override only if env var provided.
+export const API_BASE = import.meta.env.VITE_API_BASE || BASE_API_URL;

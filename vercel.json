@@ -1,7 +1,9 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/scan/:path*", "destination": "/index.html" }
+    { "source": "/scan/:path*",    "destination": "/index.html" },
+    { "source": "/overview",       "destination": "/index.html" },
+    { "source": "/overview/:path*", "destination": "/index.html" }
   ],
   "buildCommand": "bun run build",
   "outputDirectory": "backend/public",

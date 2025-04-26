@@ -1,10 +1,9 @@
 // frontend/App.tsx
->>>>>>> a8e8464 (fix home)
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ScanPage from './pages/ScanPage';
-<<<<<<< HEAD
+import OverviewPage from './pages/OverviewPage';
 import './index.css';
 
 const App: React.FC = () => (
@@ -13,13 +12,10 @@ const App: React.FC = () => (
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/scan/:code_id" element={<ScanPage />} />
+        <Route path="/overview" element={<OverviewPage />} />
       </Routes>
     </div>
   </BrowserRouter>
 );
 
-<<<<<<< HEAD
 export default App;
-=======
-export default App;
->>>>>>> a8e8464 (fix home)
