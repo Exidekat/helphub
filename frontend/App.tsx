@@ -1,7 +1,10 @@
+// frontend/App.tsx
+>>>>>>> a8e8464 (fix home)
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ScanPage from './pages/ScanPage';
+<<<<<<< HEAD
 import './index.css';
 
 const App: React.FC = () => (
@@ -15,4 +18,8 @@ const App: React.FC = () => (
   </BrowserRouter>
 );
 
+<<<<<<< HEAD
 export default App;
+=======
+export default App;
+>>>>>>> a8e8464 (fix home)
