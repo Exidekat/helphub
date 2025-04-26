@@ -1,18 +1,18 @@
-// site/frontend/App.tsx
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-//import { BASE_API_URL } from './config';
+import ScanPage from './pages/ScanPage';
+import './index.css';
 
-const App: React.FC = () => {
-    //const [activeTab, setActiveTab] = useState<string>('dashboard');
-
-    return (
-        <div className="min-h-screen background-primary text-text">
-            <HomePage />
-        </div>
-        //            <PrivacyAgreement isFixed={false}/>
-    );
-};
+const App: React.FC = () => (
+  <BrowserRouter>
+    <div className="min-h-screen bg-white text-gray-900">
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/scan/:code_id" element={<ScanPage />} />
+      </Routes>
+    </div>
+  </BrowserRouter>
+);
 
 export default App;

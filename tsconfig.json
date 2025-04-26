@@ -6,6 +6,10 @@
       "DOM.Iterable",
       "ESNext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["frontend/*"]
+    },
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,8 +25,7 @@
     "resolveJsonModule": true
   },
   "include": [
-    "frontend/src",
-    "backend/src"
+    "frontend"
   ],
   "exclude": [
     "node_modules"
