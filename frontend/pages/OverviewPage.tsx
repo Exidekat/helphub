@@ -1,8 +1,9 @@
 // frontend/pages/OverviewPage.tsx
 
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { BASE_API_URL } from '../config';  // ← relative by default
+import { BASE_API_URL } from '../config';
 
 type Report = {
   report_id: string;
@@ -33,7 +34,7 @@ export default function OverviewPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${BASE_API_URL}/qrcodes`)       // ← now "/api/qrcodes" in preview AND prod
+    fetch(`${BASE_API_URL}/qrcodes`)
       .then(res => {
         if (!res.ok) throw new Error(`Status ${res.status}`);
         return res.json() as Promise<QRCode[]>;
@@ -49,36 +50,78 @@ export default function OverviewPage() {
       });
   }, []);
 
-  if (loading) return <div className="p-8 text-secondary">Loading QR codes...</div>;
-  if (error)   return <div className="p-8 text-red-500">{error}</div>;
+  if (loading) {
+    return (
+      <div className="p-8 text-secondary">
+        Loading QR codes...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 text-red-500">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="bg-bg min-h-screen text-text p-8 sm:p-12">
       <h1 className="text-4xl font-bold mb-6">All QR Codes Overview</h1>
+
       {codes.length === 0 ? (
         <p className="text-secondary">No QR codes found.</p>
       ) : (
         <div className="space-y-8">
           {codes.map(code => (
             <div key={code.code_id} className="border border-secondary rounded-lg p-6">
-              <h2 className="text-2xl font-semibold mb-2">{code.location.name}</h2>
-              <p><strong>Code ID:</strong> {code.code_id}</p>
-              <p><strong>Created At:</strong> {new Date(code.code_created).toLocaleString()}</p>
+              <h2 className="text-2xl font-semibold mb-2">
+                {code.location.name}
+              </h2>
+
               <p>
-                <strong>Location:</strong> ({code.location.latitude}, {code.location.longitude})
+                <strong>Code ID:</strong>{' '}
+                <Link
+                  to={`/scan/${code.code_id}`}
+                  className="text-accent underline hover:text-accent/80"
+                >
+                  {code.code_id}
+                </Link>
               </p>
+
+              <p>
+                <strong>Created At:</strong>{' '}
+                {new Date(code.code_created).toLocaleString()}
+              </p>
+
+              <p>
+                <strong>Location:</strong>{' '}
+                ({code.location.latitude}, {code.location.longitude})
+              </p>
+
               {code.location.description && (
-                <p><strong>Description:</strong> {code.location.description}</p>
+                <p>
+                  <strong>Description:</strong> {code.location.description}
+                </p>
               )}
-              <h3 className="text-xl font-semibold mt-4">Reports ({code.reports.length})</h3>
+
+              <h3 className="text-xl font-semibold mt-4">
+                Reports ({code.reports.length})
+              </h3>
+
               {code.reports.length === 0 ? (
                 <p className="text-secondary">No reports</p>
               ) : (
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   {code.reports.map(rep => (
                     <li key={rep.report_id}>
-                      <p><strong>Type:</strong> {rep.type}</p>
-                      <p><strong>Details:</strong> {rep.details}</p>
+                      <p>
+                        <strong>Type:</strong> {rep.type}
+                      </p>
+                      <p>
+                        <strong>Details:</strong> {rep.details}
+                      </p>
                       <p>
                         <strong>Reported At:</strong>{' '}
                         {new Date(rep.created_at).toLocaleString()}
@@ -91,6 +134,7 @@ export default function OverviewPage() {
           ))}
         </div>
       )}
+
       <Footer />
     </div>
   );
