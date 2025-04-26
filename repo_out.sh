@@ -9,7 +9,7 @@ set -e
 FILES_DIR="./"
 
 # Array of file extensions to include.
-EXTENSIONS=(".env" ".sh" ".ts" ".tsx" ".js" ".jsx" ".mjs" ".json" ".html" ".css" ".toml" ".yaml" ".yml" "Dockerfile.db" "Dockerfile.site" ".sql" ".py")
+EXTENSIONS=(".env" ".ts" ".tsx" ".js" ".jsx" ".mjs" ".json" ".html" ".css" ".toml" ".yaml" ".yml" "Dockerfile.db" "Dockerfile.site" ".sql" ".py")
 
 # Array of filepath contents to exclude.
 # If you need more (e.g., "dist", "build", "test"), add them here:
