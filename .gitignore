@@ -1,2 +1,4 @@
 # IDE Files
-.idea
+.idea*
+.next*
+node_modules*

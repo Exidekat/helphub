@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "buildCommand": "bun run build",
+  "outputDirectory": "backend/public",
+  "functions": {
+    "**/*.ts": { "runtime": "@vercel/node@1.14.0" }
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+}
