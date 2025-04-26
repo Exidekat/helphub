@@ -9,7 +9,11 @@
     "prod": "bun run build && bun vercel --prod",
     "app": "bun cap sync && bun cap copy && bun run app:android && bun run app:ios",
     "app:android": "cd android && ./gradlew assembleRelease && ./gradlew bundleRelease",
-    "app:ios": "cd ios/App && xcodebuild -scheme App -configuration Release"
+    "app:ios": "cd ios/App && xcodebuild -scheme App -configuration Release",
+    "db:migrate": "bun run db:migrate:script",
+    "db:seed": "bun run db:seed:script",
+    "db:migrate:script": "scripts/migrate.js",
+    "db:seed:script": "scripts/seed.js"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^7.0.0",
