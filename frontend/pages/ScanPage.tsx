@@ -1,22 +1,87 @@
-"use client"
-import { Link, useParams } from "react-router-dom"
-import { Button } from "../components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Phone, PhoneCall, MapPin, AlertTriangle, ArrowLeft, Share2, Info, Clock } from "lucide-react"
-import Footer from "../components/ui/Footer"
-import LocationMap from "../components/LocationMap"
+"use client";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import {
+  Phone,
+  PhoneCall,
+  MapPin,
+  AlertTriangle,
+  ArrowLeft,
+  Share2,
+  Info,
+  Clock,
+} from "lucide-react";
+import Footer from "../components/ui/Footer";
+import { API_BASE } from "../config";
+
+type Location = {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  description?: string;
+};
 
 export default function ScanPage() {
-  const { code_id } = useParams<{ code_id: string }>()
+  const { code_id } = useParams<{ code_id: string }>();
+  const [locationInfo, setLocationInfo] = useState<Location | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportSent, setReportSent] = useState(false);
 
-  // This would normally come from an API based on the code_id
-  const locationInfo = {
-    name: "San Jose City Hall",
-    address: "200 E Santa Clara St, San Jose, CA 95113",
-    coordinates: { lat: 37.3375, lng: -121.8868 },
-    qrCode: code_id || "unknown",
-    timestamp: new Date().toISOString(),
+  useEffect(() => {
+    if (!code_id) return;
+
+    fetch(`${API_BASE}/scan/${code_id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setLocationInfo(data.location))
+      .catch((err) => setError("QR code not found or server error"));
+  }, [code_id]);
+
+  const sendReport = async () => {
+    try {
+      await fetch(`${API_BASE}/report`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code_id,
+          type: "infrastructure",
+          details: reportDetails,
+        }),
+      });
+      setReportSent(true);
+    } catch {
+      setError("Failed to send report");
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
+  if (!locationInfo) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading…</p>
+      </div>
+    );
   }
 
   return (
@@ -33,22 +98,29 @@ export default function ScanPage() {
       <main className="flex-1">
         <div className="container px-4 py-8 md:py-12 max-w-6xl mx-auto">
           <div className="mb-6">
-            <Link to="/" className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Link>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-[2fr_1fr] 2xl:max-w-6xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
             <div className="space-y-6">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">Emergency Assistance</h1>
+                <h1 className="text-3xl font-bold tracking-tight">
+                  Emergency Assistance
+                </h1>
                 <p className="text-gray-500">
-                  QR Code: <span className="font-medium text-gray-900">{code_id}</span>
+                  QR Code:{" "}
+                  <span className="font-medium text-gray-900">{code_id}</span>
                 </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
+                {/* Emergency Buttons */}
                 <Card className="border-red-200 bg-red-50">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center text-red-700">
@@ -57,8 +129,12 @@ export default function ScanPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500 mb-4">For immediate life-threatening emergencies</p>
-                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white">Call 911</Button>
+                    <Button
+                      className="w-full bg-red-600 hover:bg-red-700 text-white"
+                      asChild
+                    >
+                      <a href="tel:911">Call 911</a>
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -70,9 +146,8 @@ export default function ScanPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500 mb-4">For non-urgent police assistance</p>
-                    <Button variant="outline" className="w-full">
-                      Call (408) 277-8900
+                    <Button variant="outline" className="w-full" asChild>
+                      <a href="tel:4082778900">Call (408) 277-8900</a>
                     </Button>
                   </CardContent>
                 </Card>
@@ -85,33 +160,41 @@ export default function ScanPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500 mb-4">Locate nearby shelters and resources</p>
-                    <Button variant="outline" className="w-full">
-                      View Map
+                    <Button variant="outline" className="w-full" asChild>
+                      <a
+                        href={`https://www.google.com/maps/search/Help+center/@${locationInfo.latitude},${locationInfo.longitude},14z`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Map
+                      </a>
                     </Button>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center text-amber-700">
-                      <AlertTriangle className="mr-2 h-5 w-5" />
-                      Report Issue
+                    <CardTitle className="flex items-center text-gray-700">
+                      <Info className="mr-2 h-5 w-5" />
+                      Emergency Info
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500 mb-4">Report safety or infrastructure problems</p>
-                    <Button variant="outline" className="w-full">
-                      File Report
+                    <Button variant="outline" className="w-full" asChild>
+                      <a href="/info">Learn More</a>
                     </Button>
                   </CardContent>
                 </Card>
               </div>
 
+              {/* Report a Problem */}
               <Card>
                 <CardHeader>
                   <CardTitle>Report a Problem with this QR Code</CardTitle>
-                  <CardDescription>Is this QR code damaged or in need of maintenance? Let us know.</CardDescription>
+                  <CardDescription>
+                    Is this QR code damaged or in need of maintenance? Let us
+                    know.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -119,24 +202,43 @@ export default function ScanPage() {
                       <label htmlFor="issue" className="text-sm font-medium">
                         Issue Description
                       </label>
-                      <Input id="issue" placeholder="Describe the issue with this QR code" />
+                      <Input
+                        id="issue"
+                        placeholder="Describe the issue with this QR code"
+                        value={reportDetails}
+                        onChange={(e) => setReportDetails(e.target.value)}
+                      />
                     </div>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white">Submit Report</Button>
+                  <Button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    disabled={!reportDetails.trim()}
+                    onClick={sendReport}
+                  >
+                    {reportSent ? "Report Sent!" : "Submit Report"}
+                  </Button>
                 </CardFooter>
               </Card>
             </div>
 
+            {/* Location Info */}
             <div className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Location Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="h-[200px] rounded-md overflow-hidden bg-slate-100">
-                    <LocationMap location={locationInfo} />
+                  <div className="h-[200px] rounded-md overflow-hidden">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAcjA6lr09cp5xVura8lGMfbhW2Ful4oyk&q=${locationInfo.latitude},${locationInfo.longitude}`}
+                    ></iframe>
                   </div>
 
                   <div className="space-y-2">
@@ -144,51 +246,73 @@ export default function ScanPage() {
                       <MapPin className="mr-2 h-4 w-4 text-gray-500 mt-0.5" />
                       <div>
                         <p className="font-medium">{locationInfo.name}</p>
-                        <p className="text-sm text-gray-500">{locationInfo.address}</p>
+                        <p className="text-sm text-gray-500">
+                          {locationInfo.latitude}, {locationInfo.longitude}
+                        </p>
+                        {locationInfo.description && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            {locationInfo.description}
+                          </p>
+                        )}
                       </div>
                     </div>
 
                     <div className="flex items-center">
                       <Info className="mr-2 h-4 w-4 text-gray-500" />
-                      <p className="text-sm text-gray-500">QR Code ID: {locationInfo.qrCode}</p>
+                      <p className="text-sm text-gray-500">
+                        QR Code ID: {code_id}
+                      </p>
                     </div>
 
                     <div className="flex items-center">
                       <Clock className="mr-2 h-4 w-4 text-gray-500" />
-                      <p className="text-sm text-gray-500">Scanned: {new Date().toLocaleString()}</p>
+                      <p className="text-sm text-gray-500">
+                        Scanned: {new Date().toLocaleString()}
+                      </p>
                     </div>
+
+                    {/* Here is the new San Jose emergency numbers section */}
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Police Department</p>
+                      <p className="text-sm text-gray-500">(408) 277-8900</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Fire Department</p>
+                      <p className="text-sm text-gray-500">(408) 794-7000</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Poison Control</p>
+                      <p className="text-sm text-gray-500">(800) 222-1222</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">
+                        Mental Health Crisis Line
+                      </p>
+                      <p className="text-sm text-gray-500">(855) 278-4204</p>
+                    </div>
+
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: "HelpHub Location",
+                          text: `Check out this emergency help location: ${locationInfo.name}`,
+                          url: window.location.href,
+                        });
+                      } else {
+                        alert("Sharing is not supported on this device.");
+                      }
+                    }}
+                  >
                     <Share2 className="mr-2 h-4 w-4" />
                     Share Location
                   </Button>
                 </CardFooter>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Emergency Contacts</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Police Department</p>
-                    <p className="text-sm text-gray-500">(408) 277-8900</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Fire Department</p>
-                    <p className="text-sm text-gray-500">(408) 535-7900</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Poison Control</p>
-                    <p className="text-sm text-gray-500">(800) 222-1222</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Mental Health Crisis Line</p>
-                    <p className="text-sm text-gray-500">(800) 273-8255</p>
-                  </div>
-                </CardContent>
               </Card>
             </div>
           </div>
@@ -197,5 +321,5 @@ export default function ScanPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
