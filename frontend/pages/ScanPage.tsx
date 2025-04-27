@@ -22,7 +22,8 @@ import {
   Clock,
 } from "lucide-react";
 import Footer from "../components/ui/Footer";
-import { API_BASE, GOOGLE_MAPS_API_KEY } from "../config";
+import { API_BASE } from "../config";
+import GoogleMapEmbed from "../components/GoogleMapEmbed";
 
 type Location = {
   id: string;
@@ -48,7 +49,7 @@ export default function ScanPage() {
         return res.json();
       })
       .then((data) => setLocationInfo(data.location))
-      .catch((err) => setError("QR code not found or server error"));
+      .catch(() => setError("QR code not found or server error"));
   }, [code_id]);
 
   const sendReport = async () => {
@@ -231,19 +232,9 @@ export default function ScanPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="h-52 rounded-md overflow-hidden">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      loading="lazy"
-                      allowFullScreen
-                      src={
-                        `https://www.google.com/maps/embed/v1/place` +
-                        `?key=${GOOGLE_MAPS_API_KEY}` +
-                        `&q=${locationInfo.latitude},${locationInfo.longitude}`
-                      }
-                    ></iframe>
+                    <GoogleMapEmbed lat={locationInfo.latitude} lng={locationInfo.longitude} />
                   </div>
+
                   <div className="space-y-2">
                     <div className="flex items-start">
                       <MapPin className="mr-2 h-4 w-4 text-gray-500 mt-0.5" />
