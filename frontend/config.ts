@@ -37,3 +37,10 @@ export const MOBILE_VER = import.meta.env.VITE_MOBILE_VER === 'true';
 
 // Use BASE_API_URL by default (always relative), override only if env var provided.
 export const API_BASE = import.meta.env.VITE_API_BASE || BASE_API_URL;
+
+// Google Maps API key for embedding maps; set VITE_GOOGLE_MAPS_API in env
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API || '';
+
+if (!GOOGLE_MAPS_API_KEY) {
+  console.warn('GOOGLE_MAPS_API is not set; map embedding will not work.');
+}

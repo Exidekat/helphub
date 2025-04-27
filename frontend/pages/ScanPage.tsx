@@ -22,7 +22,7 @@ import {
   Clock,
 } from "lucide-react";
 import Footer from "../components/ui/Footer";
-import { API_BASE } from "../config";
+import { API_BASE, GOOGLE_MAPS_API_KEY } from "../config";
 
 type Location = {
   id: string;
@@ -237,7 +237,11 @@ export default function ScanPage() {
                       style={{ border: 0 }}
                       loading="lazy"
                       allowFullScreen
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAcjA6lr09cp5xVura8lGMfbhW2Ful4oyk&q=${locationInfo.latitude},${locationInfo.longitude}`}
+                      src={
+                        `https://www.google.com/maps/embed/v1/place` +
+                        `?key=${GOOGLE_MAPS_API_KEY}` +
+                        `&q=${locationInfo.latitude},${locationInfo.longitude}`
+                      }
                     ></iframe>
                   </div>
                   <div className="space-y-2">
