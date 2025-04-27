@@ -230,16 +230,9 @@ export default function ScanPage() {
                   <CardTitle>Location Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="h-52 rounded-md overflow-hidden">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      loading="lazy"
-                      allowFullScreen
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAcjA6lr09cp5xVura8lGMfbhW2Ful4oyk&q=${locationInfo.latitude},${locationInfo.longitude}`}
-                    ></iframe>
-                  </div>
+                <div className="h-[200px] rounded-md overflow-hidden bg-slate-100">
+                     <LocationMap location={locationInfo} />
+                   </div>
                   <div className="space-y-2">
                     <div className="flex items-start">
                       <MapPin className="mr-2 h-4 w-4 text-gray-500 mt-0.5" />
