@@ -46,8 +46,8 @@
 ## 📞 Contribute & Contact
 
 We're sprinting through SJHacks! Questions or ideas? Ping us on Discord or open an issue in GitHub.
-Kareem Atout - @tvergix
-Haydon Behl - @exkat
-Sanat Singhal - @sanatsinghal
+- Kareem Atout - @tvergix
+- Haydon Behl - @exkat
+- Sanat Singhal - @sanatsinghal
 
 **SJ ResQ — Team #4** | **HelpHub** | **sjresq.org**
