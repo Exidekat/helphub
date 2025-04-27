@@ -234,7 +234,6 @@ export default function ScanPage() {
                   <div className="h-52 rounded-md overflow-hidden">
                     <GoogleMapEmbed lat={locationInfo.latitude} lng={locationInfo.longitude} />
                   </div>
-
                   <div className="space-y-2">
                     <div className="flex items-start">
                       <MapPin className="mr-2 h-4 w-4 text-gray-500 mt-0.5" />
