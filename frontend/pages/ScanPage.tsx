@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Footer from "../components/ui/Footer";
 import { API_BASE } from "../config";
+import LocationMap from "@/components/LocationMap";
 
 type Location = {
   id: string;
@@ -230,15 +231,8 @@ export default function ScanPage() {
                   <CardTitle>Location Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="h-[200px] rounded-md overflow-hidden">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      loading="lazy"
-                      allowFullScreen
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAcjA6lr09cp5xVura8lGMfbhW2Ful4oyk&q=${locationInfo.latitude},${locationInfo.longitude}`}
-                    ></iframe>
+                  <div className="h-[200px] rounded-md overflow-hidden bg-slate-100">
+                    <LocationMap location={locationInfo} />
                   </div>
 
                   <div className="space-y-2">
@@ -290,7 +284,6 @@ export default function ScanPage() {
                       </p>
                       <p className="text-sm text-gray-500">(855) 278-4204</p>
                     </div>
-
                   </div>
                 </CardContent>
                 <CardFooter>
