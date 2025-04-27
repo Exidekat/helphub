@@ -232,7 +232,9 @@ export default function OverviewPage() {
                     <div className="bg-gray-50 p-4 border-t">
                       <div className="flex justify-end gap-2">
                         <Button variant="outline" size="sm">
+                          <Link to={`/scan/${code.code_id}`} className="flex items-center gap-1">
                           View Details
+                          </Link>
                         </Button>
                         <Button className="bg-red-600 hover:bg-red-700 text-white" size="sm">
                           Manage
