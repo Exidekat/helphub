@@ -41,11 +41,11 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button className="bg-red-600 hover:bg-red-700 text-white">
-                    <Link to="/overview" className="flex items-center">
+                    <Link to="/demo" className="flex items-center">
                       Try Demo <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline">Find QR Locations</Button>
+                  <Button variant="outline"><Link to="/overview" className="flex items-center">Find QR Overviews</Link></Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
