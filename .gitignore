@@ -5,7 +5,11 @@ node_modules*
 
 # Bun lock
 bun.lockb
+bun.lock
 .vercel
 
 # Vite
 backend/public
+
+# Env
+.env

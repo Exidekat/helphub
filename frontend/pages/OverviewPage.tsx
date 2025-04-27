@@ -67,9 +67,9 @@ export default function OverviewPage() {
             <Link to="/overview" className="text-sm font-medium text-red-600 underline underline-offset-4">
               Overview
             </Link>
-            <a href="#" className="text-sm font-medium hover:underline underline-offset-4">
+            <Link to="/admin" className="text-sm font-medium hover:underline underline-offset-4">
               Admin
-            </a>
+            </Link>
           </nav>
         </div>
       </header>

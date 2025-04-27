@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Footer from "../components/ui/Footer";
 import { API_BASE } from "../config";
+import GoogleMapEmbed from "../components/GoogleMapEmbed";
 
 type Location = {
   id: string;
@@ -48,7 +49,7 @@ export default function ScanPage() {
         return res.json();
       })
       .then((data) => setLocationInfo(data.location))
-      .catch((err) => setError("QR code not found or server error"));
+      .catch(() => setError("QR code not found or server error"));
   }, [code_id]);
 
   const sendReport = async () => {
@@ -230,9 +231,9 @@ export default function ScanPage() {
                   <CardTitle>Location Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                <div className="h-[200px] rounded-md overflow-hidden bg-slate-100">
-                     <LocationMap location={locationInfo} />
-                   </div>
+                  <div className="h-52 rounded-md overflow-hidden">
+                    <GoogleMapEmbed lat={locationInfo.latitude} lng={locationInfo.longitude} />
+                  </div>
                   <div className="space-y-2">
                     <div className="flex items-start">
                       <MapPin className="mr-2 h-4 w-4 text-gray-500 mt-0.5" />
